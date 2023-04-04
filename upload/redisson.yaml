@@ -1,0 +1,29 @@
+masterSlaveServersConfig:
+  idleConnectionTimeout: 20000
+  connectTimeout: 20000
+  timeout: 10000
+  retryAttempts: 3
+  retryInterval: 1500
+  failedSlaveReconnectionInterval: 3000
+  failedSlaveCheckInterval: 60000
+  subscriptionsPerConnection: 5
+  clientName: webapp-${WEBAPP_TYPE}-client
+  loadBalancer: !<org.redisson.connection.balancer.RoundRobinLoadBalancer> {}
+  subscriptionConnectionMinimumIdleSize: 1
+  subscriptionConnectionPoolSize: 12
+  slaveConnectionMinimumIdleSize: 25
+  slaveConnectionPoolSize: 32
+  masterConnectionMinimumIdleSize: 12
+  masterConnectionPoolSize: 32
+  readMode: "SLAVE"
+  subscriptionMode: "SLAVE"
+  database: 8
+  masterAddress: "rediss://${REDIS_MASTER_URL}:6379"
+  slaveAddresses:
+  - "rediss://${REDIS_SLAVE_URL1}:6379"
+  - "rediss://${REDIS_SLAVE_URL2}:6379"
+  password: "${REDIS_PASSWORD}"
+threads: 16
+nettyThreads: 8
+codec: !<org.redisson.codec.MarshallingCodec> {}
+transportMode: "NIO"

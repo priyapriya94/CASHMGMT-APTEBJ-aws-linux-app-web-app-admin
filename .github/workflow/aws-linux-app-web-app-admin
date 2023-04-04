@@ -1,0 +1,32 @@
+name: aws-linux-app-web-app-admin
+
+
+on:
+  workflow_dispatch:
+    inputs:
+      appVersion:
+        required: true
+        type: string
+
+env:
+  repoPrefix: CASHMGMT-APTEBJ
+
+  
+jobs:
+  account-validation-api-image:
+    uses: dyedurham/CASHMGMT-ecs-generic-template/.github/workflows/ecs.yml@main
+    with:
+      product: 'apt'
+      repo: 'CASHMGMT-APTEBJ-aws-linux-app-web-app-admin'
+      appVersion: '${{ inputs.appVersion }}'
+      imageName: 'web-app-admin'
+      rpmPackageName: 'web-app-admin-${{ inputs.appVersion }}'
+      entrypoint: '/opt/apt/admin/apt-admin.jar'
+      app: web
+      ecr-app: app
+      scripts:  'scripts/upload-config.sh'
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.APT_NONP_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.APT_NONP_AWS_SECRET_ACCESS_KEY }}
+      TOKEN_GH: ${{ secrets.TOKEN_GH }}
+      

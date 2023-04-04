@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="consoleAppender"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder
+			class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+			<providers>
+				<timestamp />
+				<version />
+				<sequence>
+					<fieldName>sequenceNumberField</fieldName>
+				</sequence>
+				<loggerName>
+					<shortenedLoggerNameLength>20</shortenedLoggerNameLength>
+				</loggerName>
+				<threadName />
+				<logLevel />
+				<mdc />
+				<message />
+				<arguments />
+				<callerData>
+					<fieldName>caller</fieldName>
+					<classFieldName>class</classFieldName>
+					<methodFieldName>method</methodFieldName>
+					<fileFieldName>file</fileFieldName>
+					<lineFieldName>line</lineFieldName>
+				</callerData>
+				<throwableClassName />
+				<throwableRootCauseClassName>
+					<useSimpleClassName>false</useSimpleClassName>
+				</throwableRootCauseClassName>
+				<stackHash />
+				<stackTrace>
+					<throwableConverter
+						class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+						<maxDepthPerThrowable>20</maxDepthPerThrowable>
+						<maxLength>1000</maxLength>
+						<shortenedClassNameLength>30</shortenedClassNameLength>
+						<rootCauseFirst>true</rootCauseFirst>
+						<inlineHash>true</inlineHash>
+					</throwableConverter>
+				</stackTrace>
+			</providers>
+		</encoder>
+	</appender>
+​
+	<appender name="asyncAppender"
+		class="net.logstash.logback.appender.LoggingEventAsyncDisruptorAppender">
+		<appender class="ch.qos.logback.core.read.ListAppender" />
+		<listener
+			class="net.logstash.logback.appender.listener.LoggingEventAppenderListenerImpl" />
+		<appender-ref ref="consoleAppender" />
+	</appender>
+​
+	<logger name="com.telus.apt" level="${APT_LOG_LEVEL:-INFO}" additivity="false">
+		<appender-ref ref="asyncAppender" />
+	</logger>
+​
+	<logger name="org.hibernate.SQL" level="${APT_SQL_LOG_LEVEL:-INFO}">
+		<appender-ref ref="asyncAppender" />
+	</logger>
+  
+  	<logger name="com.zaxxer.hikari" level="${APT_HIKARI_LOG_LEVEL:-TRACE}">
+		<appender-ref ref="asyncAppender" />
+	</logger>
+​
+	<root level="${ROOT_LOG_LEVEL:-INFO}">
+		<appender-ref ref="asyncAppender" />
+	</root>
+​
+</configuration>
